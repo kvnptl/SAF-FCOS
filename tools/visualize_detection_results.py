@@ -87,7 +87,7 @@ def vis_one_image(im, im_name, output_dir, boxes, thresh=0.508, dpi=200, box_alp
 
 
 def run(dic):
-    img = cv2.imread(os.path.join('/home/citybuster/Data/nuScenes', dic["file_name"]), cv2.IMREAD_COLOR)[:, :, ::-1]
+    img = cv2.imread(os.path.join('/scratch/kpatel2s/datasets/nuScenes', dic["file_name"]), cv2.IMREAD_COLOR)[:, :, ::-1]
     basename = os.path.splitext(os.path.basename(dic["file_name"]))[0]
     image_id = dic['id']
     cls_box_i = []
@@ -98,21 +98,25 @@ def run(dic):
         item.extend(box)
         item.append(score)
         cls_box_i.append(item)
-    cls_box_i = np.asarray(cls_box_i)
-    vis_one_image(img, basename, '/home/citybuster/Projects/FCOS/' + config_name, cls_box_i)
+    
+    if len(cls_box_i) == 0:
+        cls_box_i = None
+    else:
+        cls_box_i = np.asarray(cls_box_i)
+        vis_one_image(img, basename, '/home/kpatel2s/kpatel2s/test_zone/saf_fcos_method/SAF-FCOS/tmp/' + config_name, cls_box_i)
 
 
 if __name__ == "__main__":
 
     config_name = 'fcos_imprv_R_50_FPN_1x_IMG'
-    json_file_path = '/home/citybuster/Projects/FCOS/training_dir/fcos_imprv_R_50_FPN_1x_IMG/inference-model_0090000.pth/nuscenes_test_cocostyle/bbox.json'
+    json_file_path = '/home/kpatel2s/kpatel2s/test_zone/saf_fcos_method/SAF-FCOS/tmp/fcos_imprv_R_50_FPN_1x/inference-model_0040000/nuscenes_test_cocostyle/bbox.json'
     with open(json_file_path, "r") as f:
         predictions = json.load(f)
     pred_by_image = defaultdict(list)
     for p in predictions:
         pred_by_image[p["image_id"]].append(p)
 
-    with open('/home/citybuster/Data/nuScenes/v1.0-trainval/gt_fcos_coco_test_v2.json', 'r') as f:
+    with open('/scratch/kpatel2s/datasets/nuScenes/v1.0-trainval/gt_fcos_coco_val.json', 'r') as f:
         dicts = json.load(f)
         dicts = dicts['images']
 
@@ -125,3 +129,8 @@ if __name__ == "__main__":
         for i, f in enumerate(futures.as_completed(fs)):
             # Write progress to error so that it can be seen
             print_progress(i, num_tokens, prefix='VisDetection', suffix='Done ', bar_length=40)
+
+    # run without multi-threading
+    # for i, dic in enumerate(dicts):
+    #     run(dic)
+    #     print_progress(i, num_tokens, prefix='VisDetection', suffix='Done ', bar_length=40)

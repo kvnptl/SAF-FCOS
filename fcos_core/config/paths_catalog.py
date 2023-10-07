@@ -7,16 +7,16 @@ import os
 class DatasetCatalog(object):
     DATASETS = {
         "nuscenes_train_cocostyle": {
-            "img_dir": "/home/citybuster/Data/nuScenes",
-            "ann_file": "/home/citybuster/Data/nuScenes/v1.0-trainval/gt_fcos_coco_train.json"
+            "img_dir": "/scratch/kpatel2s/datasets/nuScenes",
+            "ann_file": "/scratch/kpatel2s/datasets/nuScenes/v1.0-trainval/gt_fcos_coco_train.json"
         },
         "nuscenes_val_cocostyle": {
-            "img_dir": "/home/citybuster/Data/nuScenes",
-            "ann_file": "/home/citybuster/Data/nuScenes/v1.0-trainval/gt_fcos_coco_val.json"
+            "img_dir": "/scratch/kpatel2s/datasets/nuScenes",
+            "ann_file": "/scratch/kpatel2s/datasets/nuScenes/v1.0-trainval/gt_fcos_coco_val.json"
         },
         "nuscenes_test_cocostyle": {
-            "img_dir": "/home/citybuster/Data/nuScenes",
-            "ann_file": "/home/citybuster/Data/nuScenes/v1.0-trainval/gt_fcos_coco_val.json"
+            "img_dir": "/scratch/kpatel2s/datasets/nuScenes",
+            "ann_file": "/scratch/kpatel2s/datasets/nuScenes/v1.0-trainval/gt_fcos_coco_val.json"
         }
     }
 

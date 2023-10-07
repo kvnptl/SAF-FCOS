@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import argparse
 import json
 import os
+from tqdm import tqdm
 
 import numpy as np
 from nuscenes.nuscenes import NuScenes
@@ -62,13 +63,13 @@ def run(data_dir, out_dir):
     img_id = 0
     ann_id = 0
     json_name = 'gt_fcos_coco_%s.json'
-    for data_set, token_list in zip(sets, all_tokens):
+    for data_set, token_list in tqdm(zip(sets, all_tokens)):
         nusc = all_nuscs[data_set]
         print('Starting %s' % data_set)
         ann_dict = {}
         images = []
         annotations = []
-        for sample_data_token in token_list:
+        for sample_data_token in tqdm(token_list):
             # if len(images) % 50 == 0:
             #     print("Processed %s images, %s annotations" % (
             #         len(images), len(annotations)))
@@ -95,7 +96,7 @@ def run(data_dir, out_dir):
             image['file_name'] = sample_data['filename']
             image['pc_file_name'] = pc_rec['filename'].replace('samples', 'imagepc').replace('pcd', 'png')
 
-            pc_image_path = os.path.join(data_dir, image['pc_file_name'].replace('imagepc', 'imagepc_01'))
+            pc_image_path = os.path.join(data_dir, image['pc_file_name'].replace('imagepc', 'imagepc_07'))
             if not os.path.isfile(pc_image_path):
                 print(pc_image_path)
             images.append(image)

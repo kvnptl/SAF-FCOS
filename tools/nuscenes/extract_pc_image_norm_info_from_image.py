@@ -89,7 +89,7 @@ def extract(data_dir, out_dir):
     sets = ['train', ]
     all_annos = [train_annos, ]
     json_name = 'gt_fcos_coco_%s_%02d.json'
-    radius_list = [1, 3, 5, 7, 9, 11]
+    radius_list = [7]
     for radius in radius_list:
         for data_set, set_annos in zip(sets, all_annos):
             print('Starting %s, Radius %02d' % (data_set, radius))
@@ -97,7 +97,7 @@ def extract(data_dir, out_dir):
             norm_param = {}
             pc_im_means = None
             pc_im_stds = None
-            for annos in set_annos:
+            for annos in tqdm(set_annos):
                 if len(annos) > 0:
                     num_item += 1
                     image = dict()
@@ -114,6 +114,10 @@ def extract(data_dir, out_dir):
                     image['file_name'] = sample_data['filename']
                     image['pc_file_name'] = pc_rec['filename'].replace('samples', 'imagepc_%02d' % radius).replace(
                         'pcd', 'json')
+                    # check if the image file exists
+                    if not os.path.isfile(os.path.join(data_dir, image['pc_file_name'])):
+                        print('File not exist: %s' % image['pc_file_name'])
+                        continue
                     with open(os.path.join(data_dir, image['pc_file_name']), 'r') as f:
                         image_info = json.load(f)
 

@@ -68,8 +68,8 @@ def main():
     model.to(cfg.MODEL.DEVICE)
 
     checkpointer = DetectronCheckpointer(cfg, model)
-    model_name = args.checkpointer_file.split('/')[-1]
-    _ = checkpointer.load(args.checkpointer_file)
+    model_name = args.checkpoint_file.split('/')[-1].split('.')[0]
+    _ = checkpointer.load(args.checkpoint_file)
 
     iou_types = ("bbox",)
     if cfg.MODEL.MASK_ON:

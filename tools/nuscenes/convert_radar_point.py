@@ -363,30 +363,35 @@ def run():
 
     # Loop through the records and get front radar point pc info by Multi Thread.
     print("Generating 2D re-projections of the nuScenes dataset")
-    num_threads = CPU_COUNT
-    num_tokens = len(sample_data_camera_tokens)
-    with futures.ProcessPoolExecutor(max_workers=num_threads) as executor:
-        fs = [executor.submit(get_pc_info, token) for token in
-              sample_data_camera_tokens]
-        for i, f in enumerate(futures.as_completed(fs)):
-            # Write progress to error so that it can be seen
-            print_progress(i, num_tokens, prefix=nuScenes_version, suffix='Done ', bar_length=40)
+    # num_threads = CPU_COUNT
+    # num_tokens = len(sample_data_camera_tokens)
+    # with futures.ProcessPoolExecutor(max_workers=num_threads) as executor:
+    #     fs = [executor.submit(get_pc_info, token) for token in
+    #           sample_data_camera_tokens]
+    #     for i, f in enumerate(futures.as_completed(fs)):
+    #         # Write progress to error so that it can be seen
+    #         print_progress(i, num_tokens, k prefix=nuScenes_version, suffix='Done ', bar_length=40)
 
     # # If you do not want to use multi thread, comment the multi thread code, and uncomment the below code
-    # for token in tqdm.tqdm(sample_data_camera_tokens):
-    #     get_pc_info(token)
+    for token in tqdm.tqdm(sample_data_camera_tokens):
+        get_pc_info(token)
 
     # Convert radar point as image and save every radar image norm info as json file
     print("Generating 2D radar image by depth vx vy")
-    num_threads = CPU_COUNT
-    num_tokens = len(sample_data_camera_tokens)
-    for radius in radius_list:
-        with futures.ProcessPoolExecutor(max_workers=num_threads) as executor:
-            fs = [executor.submit(convert_pcd_file, token, radius) for token in
-                  sample_data_camera_tokens]
-            for i, f in enumerate(futures.as_completed(fs)):
-                # Write progress to error so that it can be seen
-                print_progress(i, num_tokens, prefix=nuScenes_version, suffix='Done ', bar_length=40)
+    # num_threads = CPU_COUNT
+    # num_tokens = len(sample_data_camera_tokens)
+    # for radius in radius_list:
+    #     with futures.ProcessPoolExecutor(max_workers=num_threads) as executor:
+    #         fs = [executor.submit(convert_pcd_file, token, radius) for token in
+    #               sample_data_camera_tokens]
+    #         for i, f in enumerate(futures.as_completed(fs)):
+    #             # Write progress to error so that it can be seen
+    #             print_progress(i, num_tokens, prefix=nuScenes_version, suffix='Done ', bar_length=40)
+
+    # # If you do not want to use multi thread, comment the multi thread code, and uncomment the below code
+    for token in tqdm.tqdm(sample_data_camera_tokens):
+        for radius in radius_list:
+            convert_pcd_file(token, radius)
 
     # Merge all CAM_FRONT annos as a single json file
     if not os.path.isfile(os.path.join(nusc.dataroot, 'v1.0-trainval', 'image_pc_annotations.json')):
@@ -397,7 +402,7 @@ def run():
             os.makedirs(dest_path)
         with open(os.path.join(nusc.dataroot, 'v1.0-trainval', 'image_pc_annotations.json'), 'w') as fh:
             reprojections = []
-            for token in sample_data_camera_tokens:
+            for token in tqdm(sample_data_camera_tokens):
                 # Get the sample data and the sample corresponding to that sample data.
                 sd_rec = nusc.get('sample_data', token)
                 json_path = os.path.join(nusc.dataroot,
@@ -407,21 +412,25 @@ def run():
                 reprojections.append(reprojection_records)
             json.dump(reprojections, fh, sort_keys=True, indent=4)
 
-        print("Saved the 2D re-projections under {}".format(os.path.join(nusc.dataroot, args.version, args.filename)))
+        print("Saved the 2D re-projections under {}".format(os.path.join(nusc.dataroot, args.version, 'DOESNT MATTER')))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert radar point',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--dataroot', type=str, default='/home/citybuster/Data/nuScenes/',
+    parser.add_argument('--dataroot', type=str, required=True, default='/home/citybuster/Data/nuScenes/',
+                        help="Path where nuScenes is saved.")
+    parser.add_argument('--version', type=str, default='',
                         help="Path where nuScenes is saved.")
     args = parser.parse_args()
     # Make dirs to save pc info, which is extracted from pcd file of front radar
     if not os.path.exists(os.path.join(args.dataroot, 'pc')):
         os.makedirs(os.path.join(args.dataroot, 'pc', 'RADAR_FRONT'))
 
-    nuScenes_sets = ['v1.0-test', 'v1.0-trainval']
-    radius_list = [1, 3, 5, 7, 9, 11]
+    # nuScenes_sets = ['v1.0-test', 'v1.0-trainval']
+    nuScenes_sets = ['v1.0-trainval']
+    radius_list = [7]
     for index, nuScenes_version in enumerate(nuScenes_sets):
+        args.version = nuScenes_version
         nusc = NuScenes(dataroot=args.dataroot, version=nuScenes_version)
         run()

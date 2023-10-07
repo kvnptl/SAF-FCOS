@@ -125,7 +125,7 @@ def main():
     )
     parser.add_argument(
         "--norm-info-folder",
-        default="/home/citybuster/Data/nuScenes/v1.0-trainval/norm_info/",
+        default="/scratch/kpatel2s/datasets/nuScenes/v1.0-trainval/norm_info",
         metavar="FILE",
         help="path to config file",
         type=str,
