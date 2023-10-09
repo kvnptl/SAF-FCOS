@@ -18,7 +18,7 @@
 # first, make sure that your conda is setup properly with the right environment
 # for that, check that `which conda`, `which pip` and `which python` points to the
 # right path. From a clean conda env, this is what you need to do
-conda create --name SAF-FCOS
+conda create --name SAF-FCOS python=3.8
 conda activate SAF-FCOS
 
 # this installs the right pip and dependencies for the fresh python
@@ -29,7 +29,8 @@ pip install ninja yacs cython matplotlib tqdm
 
 # follow PyTorch installation in https://pytorch.org/get-started/locally/
 # we give the instructions for CUDA 10.2
-conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
+pip install torch==1.12.1+cu102 torchvision==0.13.1+cu102 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu102
+# conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
 export INSTALL_DIR=$PWD
 
 # install pycocotools. Please make sure you have installed cython.
