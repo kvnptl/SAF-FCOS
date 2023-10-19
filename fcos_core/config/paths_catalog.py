@@ -16,7 +16,7 @@ class DatasetCatalog(object):
         },
         "nuscenes_test_cocostyle": {
             "img_dir": "/scratch/kpatel2s/datasets/nuScenes",
-            "ann_file": "/scratch/kpatel2s/datasets/nuScenes/v1.0-trainval/gt_fcos_coco_val.json"
+            "ann_file": "/scratch/kpatel2s/datasets/nuScenes/v1.0-trainval/gt_fcos_coco_test.json"
         }
     }
 
